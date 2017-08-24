@@ -35,6 +35,16 @@ services:
       - esdata2:/usr/share/elasticsearch/data
     networks:
       - esnet
+  kibana:
+    image: docker.elastic.co/kibana/kibana:5.5.2
+    container_name: kibana
+    environment:
+      ELASTICSEARCH_URL: http://elasticsearch1:9200
+      SERVER_NAME: kibana
+    networks:
+      - esnet
+    links:
+      - elasticsearch1
 
 volumes:
   esdata1:

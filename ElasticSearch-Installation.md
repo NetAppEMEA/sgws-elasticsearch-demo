@@ -18,7 +18,7 @@
 The next steps are based on [Setting Up SSL/TLS on a Cluster](https://www.elastic.co/guide/en/x-pack/current/ssl-tls.html) and [Encrypt the traffic between nodes in your elasticsearch cluster](https://kupczynski.info/2017/04/02/elasticsearch-fun-with-tls.html).
 
 1. Create a temporary folder to store the certificates in e.g. `mkdir /tmp/certificates` and allow everyone to write to it `chmod 777 /tmp/certificates` so that elasticsearch inside the docker container can use it
-2. Create and modify a `certgen.yml` file under `/tmp/certgen.yml` describing the nodes and intended DNS names for all ElasticSearch and Kibana nodes. Make sure to include internal and external DNS (e.g. node name and external DNS names both with hostname and FQDN). You can start with the example in this GitHub repository under `elastic/certgen.yml`
+2. Create and modify a `certgen.yml` file under `/tmp/certgen.yml` describing the nodes and intended DNS names for all ElasticSearch and Kibana nodes. Make sure to include internal and external DNS (e.g. node name and external DNS names both with hostname and FQDN). You can start with the example in this GitHub repository under `elasticsearch/certgen.yml`
 3. Start ElasticSearch in a temporary docker container to run the certgen utility with 
     
        docker run -it --rm \
@@ -29,12 +29,21 @@ The next steps are based on [Setting Up SSL/TLS on a Cluster](https://www.elasti
            bin/x-pack/certgen -csr -in certgen.yml \
            -out /usr/share/elasticsearch/config/x-pack/certificates/bundle.zip
 
+4. Unzip the bundle file with e.g.
+
+       cd /tmp/certificates
+       unzip bundle.zip
+
+5. Store the key files in a secure location, you will need them later for deploying the docker containers
+6. Use the `.csr` Certificate Signing Requests to request valid certificates from the Certification Authority of your choice
+7. Store the certificates on the docker server in Base64 format, e.g. using names like `elasticsearch1.crt`
+8. Store the certificate chain of the Certification Authority on the docker server in Base64 format. If the chain is in p7b format use `openssl pkcs7 -inform der -in ca.p7b -print_certs -out ca.crt` to convert it
 
 ## Configure ElasticSearch and Kibana
 
 Follow the steps outlined in [Install Elasticsearch with Docker](https://www.elastic.co/guide/en/elasticsearch/reference/5.5/docker.html#_security_note) and [Running Kibana on Docker](https://www.elastic.co/guide/en/kibana/5.5/docker.html).
 
-1. Create and modify a `docker-compose.yml` file using the one from this GitHub repository under `elastic/docker-compose.yml`. The one in the documentation is missing `container_name: elasticsearch2` for the `elasticsearch 2` services causing node discovery issues.
+1. Create and modify a `docker-compose.yml` file using the one from this GitHub repository under `elasticsearch/docker-compose.yml`. The one in the documentation is missing `container_name: elasticsearch2` for the `elasticsearch 2` services causing node discovery issues.
 2. Start the ElasticSearch Cluster with `docker-compose up`. If you want to daemonize it (e.g. put it to the background), use `docker-compose up -d`
 3. Verify that ElasticSearch is running and healthy with `curl -u elastic:changeme http://127.0.0.1:9200/_cluster/health?pretty=true`. The status should `green` and not `yellow` or `red`. `number_of_nodes` should be 2.
 4. Follow the steps described in [Notes for production use and defaults](https://www.elastic.co/guide/en/elasticsearch/reference/5.5/docker.html#_notes_for_production_use_and_defaults)

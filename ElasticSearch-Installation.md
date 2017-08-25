@@ -38,6 +38,26 @@ The next steps are based on [Setting Up SSL/TLS on a Cluster](https://www.elasti
 6. Use the `.csr` Certificate Signing Requests to request valid certificates from the Certification Authority of your choice
 7. Store the certificates on the docker server in Base64 format, e.g. using names like `elasticsearch1.crt`
 8. Store the certificate chain of the Certification Authority on the docker server in Base64 format. If the chain is in p7b format use `openssl pkcs7 -inform der -in ca.p7b -print_certs -out ca.crt` to convert it
+9. The result should be similar to
+
+       tree /tmp/certificates/
+       /tmp/certificates/
+       ├── ca
+       │   └── ca.crt
+       ├── elasticsearch1
+       │   ├── elasticsearch1.crt
+       │   ├── elasticsearch1.csr
+       │   └── elasticsearch1.key
+       ├── elasticsearch2
+       │   ├── elasticsearch2.crt
+       │   ├── elasticsearch2.csr
+       │   └── elasticsearch2.key
+       └── kibana
+           ├── kibana.crt
+           ├── kibana.csr
+           └── kibana.key
+
+10. Make sure all folders and files are readable by the elastic user with uid 1000 and gid 1000 `chown -R 1000:1000 /tmp/certificates`
 
 ## Configure ElasticSearch and Kibana
 

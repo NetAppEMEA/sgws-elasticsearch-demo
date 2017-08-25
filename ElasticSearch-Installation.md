@@ -13,6 +13,22 @@
 
 1. Check if `vm.max_map_count` is set to 262144 with `grep vm.max_map_count /etc/sysctl.conf`. If it is not set, use `echo vm.max_map_count=262144 >> /etc/sysctl.conf` and ensure it is set in the live environment with `sysctl -w vm.max_map_count=262144`
 
+### SSL Certificate Generation
+
+The next steps are based on [Setting Up SSL/TLS on a Cluster](https://www.elastic.co/guide/en/x-pack/current/ssl-tls.html) and [Encrypt the traffic between nodes in your elasticsearch cluster](https://kupczynski.info/2017/04/02/elasticsearch-fun-with-tls.html).
+
+1. Create a temporary folder to store the certificates in e.g. `mkdir /tmp/certificates` and allow everyone to write to it `chmod 777 /tmp/certificates` so that elasticsearch inside the docker container can use it
+2. Create and modify a `certgen.yml` file under `/tmp/certgen.yml` describing the nodes and intended DNS names for all ElasticSearch and Kibana nodes. Make sure to include internal and external DNS (e.g. node name and external DNS names both with hostname and FQDN). You can start with the example in this GitHub repository under `elastic/certgen.yml`
+3. Start ElasticSearch in a temporary docker container to run the certgen utility with 
+    
+       docker run -it --rm \
+           -v '/tmp/certgen.yml:/usr/share/elasticsearch/config/x-pack/certgen.yml:Z' \
+           -v '/tmp/certificates:/usr/share/elasticsearch/config/x-pack/certificates' \
+           -w /usr/share/elasticsearch \
+           'docker.elastic.co/elasticsearch/elasticsearch:5.5.2' \
+           bin/x-pack/certgen -csr -in certgen.yml \
+           -out /usr/share/elasticsearch/config/x-pack/certificates/bundle.zip
+
 
 ## Configure ElasticSearch and Kibana
 

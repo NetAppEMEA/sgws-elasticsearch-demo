@@ -1,0 +1,21 @@
+discovery.zen.minimum_master_nodes: 1
+
+# set node name which will also be used as hostname
+node.name: elasticsearch1
+
+# configure node to be reachable by other nodes
+network.host: 0.0.0.0
+# configure node to be reachable externally
+http.host: 0.0.0.0
+# allow node communication only via internal interface
+transport.host: 172.18.10.2
+
+# configure SSL certificates, keys, certification authority certificate and set SSL verification to full to verify server and client certificates
+xpack.ssl.key: /usr/share/elasticsearch/config/x-pack/tls/elasticsearch1/elasticsearch1.key
+xpack.ssl.certificate: /usr/share/elasticsearch/config/x-pack/tls/elasticsearch1/elasticsearch1.crt
+xpack.ssl.certificate_authorities: ["/usr/share/elasticsearch/config/x-pack/tls/ca/ca.crt" ]
+xpack.ssl.verification_mode: full
+
+# enable SSL for node to node and for external communication
+xpack.security.transport.ssl.enabled: true
+xpack.security.http.ssl.enabled: true

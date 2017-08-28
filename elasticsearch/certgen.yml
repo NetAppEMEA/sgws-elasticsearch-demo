@@ -1,0 +1,18 @@
+instances:
+  - name: "elasticsearch1"
+    dns:
+      - "elasticsearch1"
+      - "florianf-elasticsearch.muccbc.hq.netapp.com"
+    ip:
+      - "172.18.10.2"
+  - name: "elasticsearch2"
+    dns:
+      - "elasticsearch2"
+    ip:
+      - "172.18.10.3"
+  - name: "kibana"
+    dns:
+      - "kibana"
+      - "florianf-kibana.muccbc.hq.netapp.com"
+    ip:
+      - "172.18.10.4"

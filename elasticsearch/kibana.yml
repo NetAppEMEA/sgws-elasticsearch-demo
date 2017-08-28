@@ -1,0 +1,15 @@
+# specify URL of one elasticsearch node to connect to, Kibana will discover all other nodes
+elasticsearch.url: https://elasticsearch1:9200
+
+# set host to external IP so that Kibana is reachable from outside the container
+server.host: 0.0.0.0
+# set name which will also be used as hostname
+server.name: kibana
+
+# enable SSL and provide path to SSL key and certificate
+server.ssl.enabled: true
+server.ssl.key: /usr/share/kibana/config/x-pack/tls/kibana/kibana.key
+server.ssl.certificate: /usr/share/kibana/config/x-pack/tls/kibana/kibana.crt
+
+# provide path to CA certificate for verification of elasticsearch SSL certificate
+elasticsearch.ssl.certificateAuthorities: ["/usr/share/kibana/config/x-pack/tls/ca/ca.crt" ]

@@ -23,7 +23,7 @@ The next steps are based on [Setting Up SSL/TLS on a Cluster](https://www.elasti
     
        docker run -it --rm \
            -v '/tmp/certgen.yml:/usr/share/elasticsearch/config/x-pack/certgen.yml:Z' \
-           -v '/tmp/certificates:/usr/share/elasticsearch/config/x-pack/certificates' \
+           -v '/tmp/certificates:/usr/share/elasticsearch/config/x-pack/certificates:Z' \
            -w /usr/share/elasticsearch \
            'docker.elastic.co/elasticsearch/elasticsearch:5.5.2' \
            bin/x-pack/certgen -csr -in certgen.yml \
@@ -35,7 +35,7 @@ The next steps are based on [Setting Up SSL/TLS on a Cluster](https://www.elasti
        unzip bundle.zip
 
 5. Store the key files in a secure location, you will need them later for deploying the docker containers
-6. Use the `.csr` Certificate Signing Requests to request valid certificates from the Certification Authority of your choice
+6. Use the `.csr` Certificate Signing Requests to request valid certificates from the Certification Authority of your choice. Important: The certificates must be usable for client and server authentication!
 7. Store the certificates on the docker server in Base64 format, e.g. using names like `elasticsearch1.crt`
 8. Store the certificate chain of the Certification Authority on the docker server in Base64 format. If the chain is in p7b format use `openssl pkcs7 -inform der -in ca.p7b -print_certs -out ca.crt` to convert it
 9. The result should be similar to

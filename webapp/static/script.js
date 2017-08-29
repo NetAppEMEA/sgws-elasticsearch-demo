@@ -7,7 +7,6 @@ $(document).ready(function () {
     load_results();
     get_buckets();
 
-
     function get_buckets() {
         $.get('/buckets', function (data) {
             if (data) {
@@ -21,7 +20,6 @@ $(document).ready(function () {
             }
         });
     }
-
 
     function isEmpty(val){
         return (val === undefined || val == null || val.length <= 0) ? true : false;

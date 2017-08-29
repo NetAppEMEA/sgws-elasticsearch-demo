@@ -2,6 +2,15 @@
     <td>{{ r.bucket }}</td>
     <td>{{ r.key }}</td>
     <td>{{ r.size }}</td>
-    <td>{{ r.metadata }}</td>
+    <td><ul>
+      {% for k, v in r.metadata.iteritems() %}
+        <li>{{ k }}={{ v }}</li>
+      {% endfor %}
+    </ul></td>
+    <td><ul>
+      {% for k, v in r.tags.iteritems() %}
+        <li>{{ k }}={{ v }}</li>
+      {% endfor %}
+    </ul></td>
 </tr>
 {% endfor %}

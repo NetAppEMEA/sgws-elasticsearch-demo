@@ -35,22 +35,22 @@ def get_buckets():
 @app.route('/search')
 def get_search():
     args = request.args
-    print args
-    resp = []
+    print "args: %s", args
+
     es = Elasticsearch([elasticsearch_endpoint], verify_certs=False)
     matches = []
     for arg in args:
-        print arg
         key = arg
         value = args[key]
         match = {"match": { key:value}}
         matches.append(match)
     print matches
+
     search_output = [] 
     search = es.search(index="objects", body={"query": {"bool": { "must": matches}}})
     search_results = search['hits']['hits']
     for search_result in search_results:
         search_output.append(search_result['_source'])
-    for r in search_output:
-        print r['bucket']
+    print search_output
     return render_template('results.html', results=search_output)
+

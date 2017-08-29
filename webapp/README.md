@@ -9,6 +9,7 @@ $ ./run.sh
 # Requirements
 
 * Flask
+* Write more requirements :)
 
 # TODOs
 
@@ -16,4 +17,3 @@ $ ./run.sh
 * Documentation
 * Bucket selection not working properly
 * Adjust search queries to also query tags
-* Make metadata fields look pretty

@@ -1,4 +1,5 @@
-ELASTICSEARCH_ENDPOINT=https://<hostname>:[port]
-SGWS_ACCOUNT_ID=<account id>
-SGWS_LOGIN=<login>
-SGWS_PASSWORD=<password>
+ELASTICSEARCH_ENDPOINT="https://<hostname>:[port]"
+SGWS_TENANT_ENDPOINT="https://<hostname>"
+SGWS_TENANT_ID="<account id>"
+SGWS_LOGIN="<login>"
+SGWS_PASSWORD="<password>"

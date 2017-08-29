@@ -1,0 +1,7 @@
+{% for r in results %}<tr>
+    <td>{{ r.bucket }}</td>
+    <td>{{ r.key }}</td>
+    <td>{{ r.size }}</td>
+    <td>{{ r.metadata }}</td>
+</tr>
+{% endfor %}

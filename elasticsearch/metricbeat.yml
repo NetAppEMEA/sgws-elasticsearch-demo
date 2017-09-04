@@ -1,0 +1,17 @@
+output.elasticsearch:
+  hosts: ["elasticsearch1","elasticsearch2"]
+  protocol: https
+  username: "elastic"
+  password: "changeme"
+  # provide path to CA certificate for verification of elasticsearch SSL certificate
+  ssl.certificate_authorities: ["/usr/share/metricbeat/config/x-pack/tls/ca/ca.crt" ]
+
+dashboards.enabled: true
+
+metricbeat.modules:
+- module: prometheus
+  metricsets: ["stats"]
+  period: 10s
+  hosts: ["https://sg-adm.muccbc.hq.netapp.com:9090"]
+  metrics_path: /metrics
+  namespace: storagegrid-performance

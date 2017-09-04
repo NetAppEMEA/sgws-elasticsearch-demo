@@ -1,6 +1,7 @@
 version: '2'
 services:
   elasticsearch1:
+    restart: unless-stopped
     image: docker.elastic.co/elasticsearch/elasticsearch:5.5.2
     container_name: elasticsearch1
     environment:
@@ -14,11 +15,16 @@ services:
     mem_limit: 1g
     volumes:
       - esdata1:/usr/share/elasticsearch/data
+      - ./elasticsearch1.yml:/usr/share/elasticsearch/config/elasticsearch.yml:Z
+      - /tmp/certificates/ca:/usr/share/elasticsearch/config/x-pack/tls/ca:z
+      - /tmp/certificates/elasticsearch1:/usr/share/elasticsearch/config/x-pack/tls/elasticsearch1:Z
     ports:
       - 9200:9200
     networks:
-      - esnet
+      internal-tls:
+        ipv4_address: 172.18.10.2
   elasticsearch2:
+    restart: unless-stopped
     image: docker.elastic.co/elasticsearch/elasticsearch:5.5.2
     container_name: elasticsearch2
     environment:
@@ -33,20 +39,42 @@ services:
     mem_limit: 1g
     volumes:
       - esdata2:/usr/share/elasticsearch/data
+      - ./elasticsearch2.yml:/usr/share/elasticsearch/config/elasticsearch.yml:Z
+      - /tmp/certificates/ca:/usr/share/elasticsearch/config/x-pack/tls/ca:z
+      - /tmp/certificates/elasticsearch2:/usr/share/elasticsearch/config/x-pack/tls/elasticsearch2:Z
     networks:
-      - esnet
+      internal-tls:
+        ipv4_address: 172.18.10.3
   kibana:
+    restart: unless-stopped
     image: docker.elastic.co/kibana/kibana:5.5.2
     container_name: kibana
-    environment:
-      ELASTICSEARCH_URL: http://elasticsearch1:9200
-      SERVER_NAME: kibana
+    volumes:
+      - ./kibana.yml:/usr/share/kibana/config/kibana.yml:Z
+      - /tmp/certificates/ca:/usr/share/kibana/config/x-pack/tls/ca:z
+      - /tmp/certificates/kibana:/usr/share/kibana/config/x-pack/tls/kibana:Z
     ports:
       - 5601:5601
     networks:
-      - esnet
+      internal-tls:
+        ipv4_address: 172.18.10.4
     links:
       - elasticsearch1
+      - elasticsearch2
+  metricbeat:
+    restart: unless-stopped
+    image: docker.elastic.co/beats/metricbeat:5.5.2
+    container_name: metricbeat
+    volumes:
+      - ./metricbeat.yml:/usr/share/metricbeat/metricbeat.yml:Z
+      - /tmp/certificates/ca:/usr/share/metricbeat/config/x-pack/tls/ca:z
+    networks:
+      internal-tls:
+        ipv4_address: 172.18.10.5
+    links:
+      - elasticsearch1
+      - elasticsearch2
+      - kibana
 
 volumes:
   esdata1:
@@ -55,4 +83,10 @@ volumes:
     driver: local
 
 networks:
-  esnet:
+  internal-tls:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+      - subnet: 172.18.10.0/24
+        gateway: 172.18.10.1

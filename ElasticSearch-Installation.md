@@ -1,4 +1,4 @@
-# Installation of ElasticSearch with Kibana using Docker
+# Installation of ElasticSearch, Kibana and Metricbeat using Docker
 
 ## Preparation
 
@@ -8,6 +8,7 @@
 2. [Install Docker Compose](https://docs.docker.com/compose/install/#install-compose) (e.g. `pip install docker-compose`)
 3. Pull ElasticSearch Docker Image using `docker pull docker.elastic.co/elasticsearch/elasticsearch:5.5.2`
 4. Pull Kibana Image using `docker pull docker.elastic.co/kibana/kibana:5.5.2`
+5. Pull Metricbeat Image using `docker pull docker.elastic.co/beats/metricbeat:5.5.2`
 
 ### System
 

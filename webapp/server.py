@@ -3,6 +3,7 @@ from flask import render_template
 from flask import request
 from flask import jsonify
 from elasticsearch import Elasticsearch
+from elasticsearch_dsl import Search
 import requests
 import json
 
@@ -42,15 +43,25 @@ def get_search():
     for arg in args:
         key = arg
         value = args[key]
+        print "KV: ", key, ": ", value
         match = {"match": { key:value}}
         matches.append(match)
     print matches
 
-    search_output = [] 
+    search_output = []
     search = es.search(index="objects", body={"query": {"bool": { "must": matches}}})
     search_results = search['hits']['hits']
     for search_result in search_results:
         search_output.append(search_result['_source'])
-    print search_output
-    return render_template('results.html', results=search_output)
 
+    sanitized_results = []
+    for r in search_output:
+        u = {}
+        u['size'] = r['size']
+        u['bucket'] = r['bucket']
+        u['key'] = r['key']
+        u['metadata'] = r['metadata'] if r['metadata'] != None else {}
+        u['tags'] = r['tags'] if r['tags'] != None else {}
+        sanitized_results.append(u)
+
+    return render_template('results.html', results=sanitized_results)
